@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>untitled</artifactId>
+    <artifactId>fraud</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -31,5 +31,4 @@
             <scope>runtime</scope>
         </dependency>
     </dependencies>
-
 </project>
