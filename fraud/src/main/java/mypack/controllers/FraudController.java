@@ -3,11 +3,12 @@ package mypack.controllers;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import mypack.models.FraudCheck;
+import mypack.models.FraudRes;
 import mypack.models.FraudulenCustomer;
 import org.mockito.stubbing.Answer;
 import org.springframework.web.bind.annotation.*;
 import mypack.repositories.FraudRepo;
-
+import mypack.services.fraud;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,18 +17,17 @@ import static org.mockito.Mockito.when;
 
 @RestController
 @RequestMapping("api/fraud")
+@AllArgsConstructor
 public class FraudController {
-    private FraudRepo fraudRepo;
 
-    public FraudController(FraudRepo fraudRepo) {
-        this.fraudRepo = fraudRepo;
-    }
+    private final fraud fraudService;
 
     @GetMapping("/check/{id}")
     public FraudCheck isFraudulent(@PathVariable("id") Integer customerId){
-        List<FraudulenCustomer> fraudulenCustomer = null;
-        fraudulenCustomer = fraudRepo.findByIdCustomer(customerId);
-        if(fraudulenCustomer.isEmpty()) return new FraudCheck(false);
-        return new FraudCheck(true);
+        return fraudService.isFraudulen(customerId);
+    }
+    @PostMapping("/add")
+    public FraudRes addFraudulen(@RequestBody FraudulenCustomer fraudulenCustomer){
+        return fraudService.addFraud(fraudulenCustomer);
     }
 }

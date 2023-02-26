@@ -11,27 +11,15 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Entity
-@Data
+
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class FraudulenCustomer {
-    @Id
-    @GeneratedValue
-    private Integer id;
+
     private String customerName;
     private Integer idCustomer;
-    private Date created_at ;
-    private Date updated_at ;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private Date created_at;
+    private Date updated_at;
 
     public String getCustomerName() {
         return customerName;

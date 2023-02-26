@@ -1,10 +1,10 @@
 package mypack.services;
 
-import mypack.models.Customer;
-import mypack.models.CustomerRequest;
-import mypack.models.CustomerRes;
-import mypack.models.FraudCheck;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import mypack.models.*;
 import mypack.repositories.CustomerRepo;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -43,5 +43,17 @@ public class CustomerService {
             return new CustomerRes("",0,"Login failed because you are fraudster customer");
         }
         return new CustomerRes("",0,"Login succesfully");
+    }
+    public CustomerRes addToFraud(FraudulenCustomer fraudulenCustomer) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization","XXXXXX");
+        String json = new ObjectMapper().writeValueAsString(fraudulenCustomer);
+        HttpEntity entity = new HttpEntity(json,headers);
+        ResponseEntity<FraudRes> res = restTemplate.exchange("http://localhost:8082/api/fraud/add", HttpMethod.POST,entity,FraudRes.class);
+        if(res.getBody().getRes().contains("succesfully")) return new CustomerRes(
+                res.getBody().getCustomerName(),res.getBody().getIdCustomer(),res.getBody().getRes()
+        );
+        return new CustomerRes("",0,"can't add to fraudulen ");
     }
 }
