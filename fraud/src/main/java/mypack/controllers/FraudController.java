@@ -16,7 +16,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @RestController
-@RequestMapping("api/fraud")
+@RequestMapping("/fraud")
 @AllArgsConstructor
 public class FraudController {
 

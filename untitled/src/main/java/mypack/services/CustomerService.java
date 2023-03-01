@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mypack.models.*;
 import mypack.repositories.CustomerRepo;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -34,7 +35,7 @@ public class CustomerService {
     public CustomerRes customerLoggining(Integer id){
         //TODO integrate fraud checking in security later
         FraudCheck res = restTemplate.getForObject(
-                "http://localhost:8082/api/fraud/check/{id}",
+                "http://FRAUD/fraud/check/{id}",
                 FraudCheck.class,
                 id
                 );
@@ -50,7 +51,7 @@ public class CustomerService {
         headers.set("Authorization","XXXXXX");
         String json = new ObjectMapper().writeValueAsString(fraudulenCustomer);
         HttpEntity entity = new HttpEntity(json,headers);
-        ResponseEntity<FraudRes> res = restTemplate.exchange("http://localhost:8082/api/fraud/add", HttpMethod.POST,entity,FraudRes.class);
+        ResponseEntity<FraudRes> res = restTemplate.exchange("http://FRAUD_SERVICE/api/fraud/add", HttpMethod.POST,entity,FraudRes.class);
         if(res.getBody().getRes().contains("succesfully")) return new CustomerRes(
                 res.getBody().getCustomerName(),res.getBody().getIdCustomer(),res.getBody().getRes()
         );

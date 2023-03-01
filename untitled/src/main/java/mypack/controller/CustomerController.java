@@ -21,7 +21,7 @@ import java.util.Date;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping("customer")
 @AllArgsConstructor
 public class CustomerController{
 
