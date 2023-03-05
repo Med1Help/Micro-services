@@ -24,6 +24,7 @@ public class FraudController {
 
     @GetMapping("/check/{id}")
     public FraudCheck isFraudulent(@PathVariable("id") Integer customerId){
+
         return fraudService.isFraudulen(customerId);
     }
     @PostMapping("/add")

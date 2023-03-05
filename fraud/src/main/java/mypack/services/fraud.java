@@ -1,21 +1,22 @@
 package mypack.services;
 
+import lombok.AllArgsConstructor;
 import mypack.models.FraudCheck;
 import mypack.models.FraudRes;
 import mypack.models.FraudulenCustomer;
 import mypack.repositories.FraudRepo;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class fraud {
     private final FraudRepo fraudRepo;
+    private KafkaTemplate<String,String> kafkaTemplate;
 
-    public fraud(FraudRepo fraudRepo) {
-        this.fraudRepo = fraudRepo;
-    }
     public FraudRes addFraud(FraudulenCustomer fraudulenCustomer){
         if(!(fraudRepo.findByIdCustomer(fraudulenCustomer.getIdCustomer()).isEmpty())) return new FraudRes(fraudulenCustomer.getId(),fraudulenCustomer.getCustomerName(),fraudulenCustomer.getIdCustomer(),"already is fraudulen customer");
         FraudulenCustomer fraudulenCustomerTosave = FraudulenCustomer.builder()
@@ -33,7 +34,11 @@ public class fraud {
     public FraudCheck isFraudulen(Integer customerId){
         List<FraudulenCustomer> fraudulenCustomer = null;
         fraudulenCustomer = fraudRepo.findByIdCustomer(customerId);
-        if(fraudulenCustomer.isEmpty()) return new FraudCheck(false);
+        if(fraudulenCustomer.isEmpty()) {
+            kafkaTemplate.send("mymicrofromspring/m","the customer "+customerId+" is not fraudulen");
+            return new FraudCheck(false);
+        }
+        kafkaTemplate.send("mymicrofromspring","the customer "+fraudulenCustomer.get(0).getCustomerName()+" is fraudulen");
         return new FraudCheck(true);
     }
 }
